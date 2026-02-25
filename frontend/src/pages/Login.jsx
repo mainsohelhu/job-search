@@ -6,31 +6,41 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
-  // Seedha production environment variable
+  // Vite environment variable
   const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // URL check taaki deploy hone ke baad config error na rahe
     if (!API_BASE_URL) {
-      alert("API URL not configured! ⚠️");
+      alert("Config Error: VITE_API_URL is missing in .env file!");
       return;
     }
 
+    // Safety: Ensure no double slashes if API_BASE_URL ends with /
+    const cleanURL = API_BASE_URL.endsWith('/') 
+      ? API_BASE_URL.slice(0, -1) 
+      : API_BASE_URL;
+
     try {
-      // Template literal se endpoint ko join kiya gaya hai
-      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, formData);
+      console.log("Attempting login at:", `${cleanURL}/api/auth/login`);
       
-      localStorage.setItem("token", res.data.token); // Token save kar lo
-      localStorage.setItem("role", res.data.user.role); // Role bhi save kar lo
+      const res = await axios.post(`${cleanURL}/api/auth/login`, formData);
       
-      alert(`Welcome ${res.data.user.name}!`);
-      navigate("/"); // Home page par bhejo
-      window.location.reload(); // Navbar refresh karne ke liye
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.user.role);
+        
+        alert(`Welcome ${res.data.user.name}!`);
+        navigate("/");
+        window.location.reload();
+      }
     } catch (err) {
-      // Backend se error message handle karna
-      alert(err.response?.data?.message || "Login failed! Please check credentials.");
+      // Detailed error logging for debugging
+      console.error("Login Error Details:", err.response || err);
+      
+      const errorMessage = err.response?.data?.message || "Login failed! Server unreachable.";
+      alert(errorMessage);
     }
   };
 
@@ -41,12 +51,16 @@ const Login = () => {
         <input 
           type="email" 
           placeholder="Email" 
+          name="email"
+          autoComplete="email"
           onChange={(e) => setFormData({...formData, email: e.target.value})} 
           required 
         />
         <input 
           type="password" 
           placeholder="Password" 
+          name="password"
+          autoComplete="current-password"
           onChange={(e) => setFormData({...formData, password: e.target.value})} 
           required 
         />
