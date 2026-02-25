@@ -22,12 +22,12 @@ const JobList = () => {
       .catch(err => console.log("Fetch error:", err));
   };
 
-  useEffect(() => { 
-    fetchJobs(); 
+  useEffect(() => {
+    fetchJobs();
   }, []);
 
   const deleteJob = (id) => {
-    if(window.confirm("Bhai, pakka uda du?")) {
+    if (window.confirm("Bhai, pakka uda du?")) {
       axios.delete(`${API_BASE_URL}/api/jobs/${id}`)
         .then(() => {
           alert("Job deleted! 🗑️");
@@ -37,20 +37,20 @@ const JobList = () => {
     }
   };
 
-  const filteredJobs = jobs.filter(job => 
+  const filteredJobs = jobs.filter(job =>
     job.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     job.company?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div>
-      <input 
-        type="text" 
-        placeholder="Search by title or company..." 
+      <input
+        type="text"
+        placeholder="Search by title or company..."
         className="search-bar"
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      
+
       <div className="job-list">
         {filteredJobs.length > 0 ? filteredJobs.map((job) => (
           <div key={job._id} className="job-card">
@@ -58,10 +58,13 @@ const JobList = () => {
             <p><strong>🏢 {job.company}</strong> | 📍 {job.location}</p>
             <p>💰 {job.salary}</p>
             <p>{job.description}</p>
-            
-            <div className="button-group" style={{marginTop: '15px', display: 'flex', gap: '10px'}}>
-              
-              <a href={`mailto:${job.contactEmail}?subject=Application for ${job.title}`} className="apply-btn">
+
+            <div className="button-group" style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
+
+              <a
+                href={`mailto:${job.contactEmail}?subject=Interest in ${job.title} position&body=Hi,%0D%0AI am interested in this position at ${job.company}. Please let me know the next steps.%0D%0A%0D%0AThanks!`}
+                className="apply-btn"
+              >
                 Apply Now ✉️
               </a>
 
