@@ -7,7 +7,7 @@ const User = require('./models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || "default_secret_key_for_dev";
 
 const app = express();
 app.use(cors())
