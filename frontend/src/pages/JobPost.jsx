@@ -14,7 +14,9 @@ const PostJob = () => {
   
   const navigate = useNavigate();
 
-  // Sabhi inputs ke liye ek hi handler
+  // Vite environment variable (No fallback, seedha production URL)
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -22,17 +24,23 @@ const PostJob = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Schema ki requirements poori karte huye data bhejna
+    // Check if API URL is missing before making the request
+    if (!API_BASE_URL) {
+      alert("Configuration Error: API URL is missing!");
+      return;
+    }
+
     const finalData = { 
       ...formData, 
-      location: formData.location || "Remote", // Agar khali hai toh Remote
+      location: formData.location || "Remote",
       skills: [] 
     };
 
-    axios.post('http://localhost:5000/api/jobs', finalData)
+    // Template literal use karke production URL par post kar rahe hain
+    axios.post(`${API_BASE_URL}/api/jobs`, finalData)
       .then(() => {
         alert("Job Posted Successfully! 🚀");
-        navigate("/"); // Home page par wapas le jao
+        navigate("/"); 
       })
       .catch(err => {
         console.error("Post Error:", err.response?.data);

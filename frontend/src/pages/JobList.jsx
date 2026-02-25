@@ -5,20 +5,30 @@ const JobList = () => {
   const [jobs, setJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // --- CONFIG: Isko true/false karke check kar sakte ho ---
-const isRecruiter = localStorage.getItem("role") === "recruiter";
+  // Direct environment variable usage
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+  const isRecruiter = localStorage.getItem("role") === "recruiter";
 
   const fetchJobs = () => {
-    axios.get('http://localhost:5000/api/jobs')
+    // Agar URL missing hai toh console mein error dikhega
+    if (!API_BASE_URL) {
+      console.error("VITE_API_URL is not defined! Check your .env file or Render settings.");
+      return;
+    }
+
+    axios.get(`${API_BASE_URL}/api/jobs`)
       .then(res => setJobs(res.data.jobs))
-      .catch(err => console.log(err));
+      .catch(err => console.log("Fetch error:", err));
   };
 
-  useEffect(() => { fetchJobs(); }, []);
+  useEffect(() => { 
+    fetchJobs(); 
+  }, []);
 
   const deleteJob = (id) => {
     if(window.confirm("Bhai, pakka uda du?")) {
-      axios.delete(`http://localhost:5000/api/jobs/${id}`)
+      axios.delete(`${API_BASE_URL}/api/jobs/${id}`)
         .then(() => {
           alert("Job deleted! 🗑️");
           fetchJobs();
@@ -51,12 +61,10 @@ const isRecruiter = localStorage.getItem("role") === "recruiter";
             
             <div className="button-group" style={{marginTop: '15px', display: 'flex', gap: '10px'}}>
               
-              {/* Apply Button: Sabko dikhega */}
               <a href={`mailto:${job.contactEmail}?subject=Application for ${job.title}`} className="apply-btn">
                 Apply Now ✉️
               </a>
 
-              {/* Delete Button: Sirf tab dikhega jab isRecruiter true ho */}
               {isRecruiter && (
                 <button onClick={() => deleteJob(job._id)} className="delete-btn">
                   Delete 🗑️

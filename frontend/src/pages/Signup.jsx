@@ -6,10 +6,21 @@ const Signup = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "seeker" });
   const navigate = useNavigate();
 
+  // Vite environment variable (Seedha production URL)
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
+
   const handleSignup = async (e) => {
     e.preventDefault();
+
+    // Configuration check
+    if (!API_BASE_URL) {
+      alert("API URL missing! Check your environment settings.");
+      return;
+    }
+
     try {
-      await axios.post("http://localhost:5000/api/auth/signup", formData);
+      // Endpoint ko template literal ke saath update kiya gaya hai
+      await axios.post(`${API_BASE_URL}/api/auth/signup`, formData);
       alert("Account ban gaya! Ab Login karo. 🚀");
       navigate("/login");
     } catch (err) {
@@ -21,9 +32,24 @@ const Signup = () => {
     <div className="container">
       <form onSubmit={handleSignup} className="job-form">
         <h2>📝 Create Account</h2>
-        <input type="text" placeholder="Full Name" onChange={(e) => setFormData({...formData, name: e.target.value})} required />
-        <input type="email" placeholder="Email Address" onChange={(e) => setFormData({...formData, email: e.target.value})} required />
-        <input type="password" placeholder="Password" onChange={(e) => setFormData({...formData, password: e.target.value})} required />
+        <input 
+          type="text" 
+          placeholder="Full Name" 
+          onChange={(e) => setFormData({...formData, name: e.target.value})} 
+          required 
+        />
+        <input 
+          type="email" 
+          placeholder="Email Address" 
+          onChange={(e) => setFormData({...formData, email: e.target.value})} 
+          required 
+        />
+        <input 
+          type="password" 
+          placeholder="Password" 
+          onChange={(e) => setFormData({...formData, password: e.target.value})} 
+          required 
+        />
         
         <label style={{fontWeight: 'bold', marginBottom: '-10px'}}>I am a:</label>
         <select 
