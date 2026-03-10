@@ -31,7 +31,7 @@ const Signup = () => {
   return (
     <div className="container">
       <form onSubmit={handleSignup} className="job-form">
-        <h2>📝 Create Account</h2>
+        <h2> Create Account</h2>
         <input 
           type="text" 
           placeholder="Full Name" 
@@ -56,8 +56,8 @@ const Signup = () => {
           style={{padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0'}}
           onChange={(e) => setFormData({...formData, role: e.target.value})}
         >
-          <option value="seeker">🔍 Job Seeker</option>
-          <option value="recruiter">🏢 Recruiter</option>
+          <option value="seeker">Job Seeker</option>
+          <option value="recruiter"> Recruiter</option>
         </select>
 
         <button type="submit">Signup</button>

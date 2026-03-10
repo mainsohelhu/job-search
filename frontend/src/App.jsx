@@ -20,16 +20,14 @@ const Navbar = () => {
     <nav className="navbar">
       {/* Brand Section */}
       <div className="nav-brand">
-        <Link to="/" className="logo-link">
-          <span className="logo-text">Jobify<span className="accent">.</span></span>
-        </Link>
+          <span className="logo-text">Jobify</span>
       </div>
 
       {/* Navigation Links */}
       <div className="nav-menu">
-        <Link to="/" className="nav-link">🔍 Jobs</Link>
+        <Link to="/" className="nav-link"> Jobs</Link>
         {token && role === "recruiter" && (
-          <Link to="/post" className="nav-link">➕ Post Job</Link>
+          <Link to="/post" className="nav-link"> Post Job</Link>
         )}
       </div>
 
